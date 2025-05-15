@@ -27,3 +27,7 @@ a. Tester le processus d'importation pour vérifier
 que les données sont correctement stockées dans
 la base de données locale.
 b. Valider l'intégrité des données importées.
+
+# 6. Option pour la base de donnée (Optionnel) 
+Modèle E-R : Draw DB 
+            drawdb.vercel.app
