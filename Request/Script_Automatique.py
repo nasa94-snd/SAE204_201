@@ -76,6 +76,16 @@ for doc in filtré2:
     if '_id' in doc:
         del doc['_id']
 
+communes = []
+for item in data_stations:
+    commune = {
+        '_id': item.get('code_commune_station'),
+        "code_departement": item.get('code_departement'),
+        "libelle_commune": item.get("libelle_commune")
+    }
+            
+    communes.append(commune)
+
 regions = []
 for item in data_stations:
     region = {
@@ -107,7 +117,7 @@ for item in data_stations:
             'libelle_region': libelle_region
         }
 
-# Dédupliquer les départements
+
 departements_uniques = {}
 for item in data_stations:
     code_dept = item.get('code_departement')
@@ -118,27 +128,41 @@ for item in data_stations:
             "libelle_departement": item.get("libelle_departement")
         }
 
+communes_uniques = {}
+for item in data_stations:
+    code_com = item.get('code_commune_station')
+    if code_com and code_com not in communes_uniques:
+        communes_uniques[code_com] = {
+            '_id': code_com,
+            "code_departement": item.get('code_departement'),
+            "libelle_commune": item.get("libelle_commune")
+        }
+
 # Connexion à MongoDB
 client = MongoClient('mongodb://localhost:27017/')
 db = client['Hubleau']
 
 db.sites.drop()
 db.stations.drop()
+db.communes.drop()
 db.regions.drop()
 db.departements.drop()
 
 Sites = db['sites']
 Stations = db['stations']
+Communes = db['communes']
 Regions = db['regions']
 Departements = db['departements']
 
 Sites.insert_many(filtré1)
 Stations.insert_many(filtré2)
+Communes.insert_many(communes_uniques.values())
 Regions.insert_many(regions_uniques.values())
 Departements.insert_many(departements_uniques.values())
 
 print(f"{len(filtré1)} documents insérés dans la collection 'sites'.")
 print(f"{len(filtré2)} documents insérés dans la collection 'stations'.")
+print(f"{len(communes_uniques)} documents insérés dans la collection 'communes'.")
 print(f"{len(regions_uniques)} documents insérés dans la collection 'regions'.")
 print(f"{len(departements_uniques)} documents insérés dans la collection 'departements'.")
 
