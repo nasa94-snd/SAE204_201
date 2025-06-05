@@ -37,3 +37,36 @@ b. Valider l'intégrité des données importées.
 Modèle E-R : Draw DB 
 </br>
 https://www.drawdb.app/editor?shareId=4a612f377770601c384f4622191c619f
+
+# SAE2.01 : Développement de l'interface web pour interroger l'API Hub'eau en fonction des données statiques
+
+# 1. Conception de l'interface utilisateur
+a. Créer une maquette d'interface utilisateur pour
+visualiser les mesures et les données sur l'eau.
+</br>
+b. Définir les fonctionnalités de l'interface utilisateur.
+# 2. Développement de l'interface web
+a. Utiliser des technologies web pour construire une
+interface conviviale et réactive.
+</br>
+b. Intégrer des cartes interactives pour afficher les
+emplacements des points de mesure.
+# 3. Interaction avec la base de données locale
+Écrire des requêtes pour extraire les données de la
+base de données locale et les afficher sur
+l'interface utilisateur.
+# 4. Interrogation de l'API Hub'eau
+a. Implémenter des fonctionnalités permettant d'interroger
+l'API Hub'eau en fonction des données statiques des
+points de mesure sélectionnés par l'utilisateur.
+</br>
+b. Récupérer les données dynamiques sur l'eau et les
+afficher sur l'interface utilisateur.
+# 5. Tests et validation
+a. Tester l'interface web pour s'assurer que les données
+sont correctement récupérées de l'API Hub'eau en
+fonction des informations statiques fournies par la base
+de données locale.
+</br>
+b. Valider l’affichage des informations sur la qualité de
+l'eau sur l'interface utilisateur.
