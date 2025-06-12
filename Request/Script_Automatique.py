@@ -34,19 +34,15 @@ data_sites = recuperer_donnees(url1)
 filtré1 = []
 for item in data_sites:
     filtré_sites = {
-        'code_site': item.get('code_site'),
+        '_id': item.get('code_site'),
         'code_departement': item.get('code_departement'),
         'libelle_site': item.get('libelle_site'),
         'libelle_cours_eau': item.get('libelle_cours_eau'),
-        'latitude_station': item['geometry'].get('coordinates', [])[0],
-        'longitude_station': item['geometry'].get('coordinates', [])[1]
+        'latitude_station': item['geometry'].get('coordinates', [])[1],
+        'longitude_station': item['geometry'].get('coordinates', [])[0]
     }
             
     filtré1.append(filtré_sites)
-
-for doc in filtré1:
-    if '_id' in doc:
-        del doc['_id']
 
 # -----------------------------------------------------------------------------------------------------
 # Stations
@@ -58,13 +54,13 @@ data_stations = recuperer_donnees(url2)
 filtré2 = []
 for item in data_stations: 
     filtré_stations = {
-        'code_station': item.get('code_station'),
+        '_id': item.get('code_station'),
         'code_site': item.get('code_site'),
         'code_departement': item.get('code_departement'),
         'libelle_station': item.get('libelle_station'),
         'libelle_cours_eau': item.get('libelle_cours_eau'),
-        'latitude_station': item['geometry'].get('coordinates', [])[0],
-        'longitude_station': item['geometry'].get('coordinates', [])[1],
+        'latitude_station': item['geometry'].get('coordinates', [])[1],
+        'longitude_station': item['geometry'].get('coordinates', [])[0],
         'date_ouverture_station': item.get('date_ouverture_station'),
         'en_service': item.get('en_service')
     }
@@ -72,9 +68,6 @@ for item in data_stations:
     
     filtré2.append(filtré_stations)
 
-for doc in filtré2:
-    if '_id' in doc:
-        del doc['_id']
 
 communes = []
 for item in data_stations:
@@ -165,52 +158,3 @@ print(f"{len(filtré2)} documents insérés dans la collection 'stations'.")
 print(f"{len(communes_uniques)} documents insérés dans la collection 'communes'.")
 print(f"{len(regions_uniques)} documents insérés dans la collection 'regions'.")
 print(f"{len(departements_uniques)} documents insérés dans la collection 'departements'.")
-
-def extraire_communes(data_stations):
-    communes_uniques = {}
-    for item in data_stations:
-        code_com = item.get('code_commune')
-        if code_com and code_com not in communes_uniques:
-            communes_uniques[code_com] = {
-                '_id': code_com,
-                "code_departement": item.get('code_departement'),
-                "libelle_commune": item.get("libelle_commune")
-            }
-    return list(communes_uniques.values())
-
-def extraire_regions(data_stations):
-    regions_uniques = {}
-    for item in data_stations:
-        code_region = item.get('code_region')
-        libelle_region = item.get('libelle_region')
-        if code_region and code_region not in regions_uniques:
-            regions_uniques[code_region] = {
-                '_id': code_region,
-                'libelle_region': libelle_region
-            }
-    return list(regions_uniques.values())
-
-def extraire_departements(data_stations):
-    departements_uniques = {}
-    for item in data_stations:
-        code_dept = item.get('code_departement')
-        if code_dept and code_dept not in departements_uniques:
-            departements_uniques[code_dept] = {
-                '_id': code_dept,
-                "code_region": item.get('code_region'),
-                "libelle_departement": item.get("libelle_departement")
-            }
-    return list(departements_uniques.values())
-
-def extraire_stations(data_stations):
-    return [{
-        'code_station': item.get('code_station'),
-        'code_site': item.get('code_site'),
-        'code_departement': item.get('code_departement'),
-        'libelle_station': item.get('libelle_station'),
-        'libelle_cours_eau': item.get('libelle_cours_eau'),
-        'latitude_station': item['geometry'].get('coordinates', [])[0],
-        'longitude_station': item['geometry'].get('coordinates', [])[1],
-        'date_ouverture_station': item.get('date_ouverture_station'),
-        'en_service': item.get('en_service')
-    } for item in data_stations]
