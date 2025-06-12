@@ -1,0 +1,44 @@
+ body {
+    background-color:#F2F8FF; 
+ }
+
+/* Style de la  navigation */
+.navbar {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  padding: 10px 30px;
+  background-color: #f8fbff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 0 0 12px 12px;
+  font-family: Arial, sans-serif;
+}
+
+/* Partie gauche  */
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.brand {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* Partie droite (liens) */
+.nav-right a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: #007bff;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.nav-right a:hover {
+  color: #0056b3;
+}
