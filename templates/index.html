@@ -7,20 +7,7 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     </head>
     <body>
-        <header>
-            <nav class="navbar">
-                <div class="nav-left">
-                    <img src="{{ url_for('static', filename='hubleau_logo.png') }}" alt="Logo HUBLEAU" class="logo">
-                    <span class="brand">HUBLEAU</span>
-                </div>
-                <div class="nav-right">
-                    <a href="#">Accueil</a>
-                    <a href="#">Recherche filtré</a>
-                    <a href="#">Contact</a>
-                </div>
-            </nav>
-
-        </header>
+        {% include 'nav.html' %}
     </body>
 
 </html>
