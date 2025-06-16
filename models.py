@@ -29,17 +29,11 @@ def afficher_stations(page=1, per_page=20):
     stations_data = []
     for station in stations_list:
         code_station = station.get("_id")  # ou la bonne clé
-        mesure = get_mesures_station(code_station)
-        m = mesure[0]  # maintenant m est un dictionnaire
         stations_data.append({
             "nom": station.get("libelle_station"),
             "dpt": station.get("code_departement"),
             "code": code_station,
-            "site": station.get("libelle_site"),
-            "commune": station.get("libelle_commune"),
-            "grandeur": m.get("grandeur_hydro_elab"),
-            "valeur": m.get("resultat_obs_elab"),
-            "date": m.get("date_obs_elab")
+            "site": station.get("libelle_site")
         })
     return stations_data
 
