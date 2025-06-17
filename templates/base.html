@@ -16,13 +16,26 @@
                     <span class="brand">HUBLEAU</span>
                 </div>
                 <div class="nav-right">
-                    <a href="#">Accueil</a>
-                    <a href="#">Recherche filtré</a>
+                    <a href="{{ url_for('index') }}">Accueil</a>
+                    <a href="{{ url_for('recherche_filtre') }}"">Recherche filtré</a>
                     <a href="#">Contact</a>
                 </div>
             </nav>
 
     </header>
-    {% block content %}{% endblock %}
+<!-- Contenu principal -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+<!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-12">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="text-center text-gray-600">
+                <p>&copy; 2024 Hub'eau - Données hydrométriques de France</p>
+                <p class="text-sm mt-2">Données fournies par l'API Hub'eau</p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
