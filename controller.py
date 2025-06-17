@@ -5,6 +5,10 @@ from models import *
 
 app = Flask(__name__)
 
+#@app.route('/')
+#def acceuil():
+ #   nbr_stations = db_manager.get_nbr_stations()
+  #  return render_template('accueil.html', nbr_stations=nbr_stations)
 
 @app.route('/')
 def index():

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                </div>
+                    <span class="h1">Bienvenue sur Hubl' eau</span>
+
+            </div>
+        </header>
+
+        <main class="hero-section">
+            <div class="hero-content">
+                <h2 class="main-title">
+                    Visualisez en un clin d'œil les données d'eau en temps réel !  Suivez niveaux et débits avec une interface intuitive. Maîtrisez les données pour gérer l'eau de demain !
+                </h2>
+                
+                
+
+                <div class="buttons-container">
+                <button class="btn-card">
+                    <span class="label">Dernière mise à jour</span>
+                    <span class="value">{{mise_a_jour}}</span>
+                </button>
+                
+                <button class="btn-card">
+                    <span class="label">Station disponible</span>
+                    <span class="value">{{ nbr_stations }}</span>
+                </button>
+                
+                <button class="btn-card blue">
+                    <a href="{{ url_for('index') }}" class="btn-card blue">Accès à la carte</a>
+                </button>
+            </div>
+            </div>
+        </main>
+
+        <div class="bottom-curve"></div>
+    </div>
+</body>
+{% endblock content %}

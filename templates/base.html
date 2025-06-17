@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Hub'eau - Stations de mesure{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -16,13 +16,14 @@
                     <span class="brand">HUBLEAU</span>
                 </div>
                 <div class="nav-right">
-                    <a href="#">Accueil</a>
-                    <a href="#">Recherche filtré</a>
-                    <a href="#">Contact</a>
+                    <a href="">Accueil</a>
+                    <a href="{{ url_for('index') }}">Recherche filtré</a>
+                    <a href="">Contact</a>
                 </div>
             </nav>
 
     </header>
-    {% block content %}{% endblock %}
+    {% block content %}
+    {% endblock %}
 </body>
 </html>

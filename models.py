@@ -1,5 +1,6 @@
 import requests
 import sqlite3
+import datetime
 
 class DatabaseManager:
     def __init__(self, db_path='hubleau.db'):
@@ -106,5 +107,12 @@ class DatabaseManager:
         conn.close()
         
         return stations, total
-
+    def get_nbr_stations(self):
+        """Récupère le nombre total de stations"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM stations")
+        total = cursor.fetchone()[0]
+        conn.close()
+        return total
 db_manager = DatabaseManager()
