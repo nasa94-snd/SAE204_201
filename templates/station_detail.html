@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+
+{% block title %}{{ station.libelle_station }} - Hub'eau{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Titre et navigation -->
+        <div class="mb-6">
+            <nav class="flex mb-4" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                    <li class="inline-flex items-center">
+                        <a href="{{ url_for('recherche_filtre') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
+                            <i class="fas fa-home mr-2"></i>
+                            Recherche
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                            <span class="text-sm font-medium text-gray-500">Station {{ station.code_station }}</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+            
+            <div class="flex justify-between items-start">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Station {{ station.libelle_station }}</h1>
+                    <p class="text-lg text-gray-600">Site {{ station.libelle_site }}</p>
+                </div>
+                
+                <!-- Sélecteur de dates et grandeur -->
+                <div class="bg-white rounded-lg shadow-sm p-4 border">
+                    <form method="GET" class="space-y-4">
+                        <div class="flex items-center space-x-4">
+                            <div>
+                                <label for="date_debut" class="block text-sm font-medium text-gray-700 mb-1">Du</label>
+                                <input type="date" id="date_debut" name="date_debut" value="{{ date_debut }}" 
+                                       class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label for="date_fin" class="block text-sm font-medium text-gray-700 mb-1">Au</label>
+                                <input type="date" id="date_fin" name="date_fin" value="{{ date_fin }}" 
+                                       class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+                        
+                        <!-- Filtre par grandeur hydro -->
+                        {% if available_grandeurs %}
+                        <div>
+                            <label for="grandeur_hydro" class="block text-sm font-medium text-gray-700 mb-1">Grandeur hydro</label>
+                            <select id="grandeur_hydro" name="grandeur_hydro" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Toutes les grandeurs</option>
+                                {% for grandeur in available_grandeurs %}
+                                <option value="{{ grandeur }}" {% if grandeur_hydro == grandeur %}selected{% endif %}>
+                                    {{ grandeur }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="flex space-x-2">
+                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i class="fas fa-search mr-2"></i>Actualiser
+                            </button>
+                            <a href="{{ url_for('station_detail', code_station=station.code_station) }}" 
+                               class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 inline-block">
+                                <i class="fas fa-refresh mr-2"></i>Reset
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Informations de la station -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-6">Informations de la station</h2>
+                    
+                    <div class="space-y-4">
+                        <div class="border-b border-gray-200 pb-4">
+                            <dt class="text-sm font-medium text-gray-500 mb-1">Ouvert depuis</dt>
+                            <dd class="text-sm text-gray-900">
+                                {% if station.date_ouverture_station %}
+                                    {{ station.date_ouverture_station.split('T')[0] if 'T' in station.date_ouverture_station else station.date_ouverture_station }}
+                                {% else %}
+                                    Non renseigné
+                                {% endif %}
+                            </dd>
+                        </div>
+                        
+                        <div class="border-b border-gray-200 pb-4">
+                            <dt class="text-sm font-medium text-gray-500 mb-1">Période analysée</dt>
+                            <dd class="text-sm text-gray-900">
+                                Du {{ date_debut }} au {{ date_fin }}
+                                {% if dates_automatiques %}
+                                <span class="text-xs text-blue-600 block mt-1">
+                                    <i class="fas fa-info-circle mr-1"></i>Dates automatiques (ouverture → dernière mesure)
+                                </span>
+                                {% endif %}
+                            </dd>
+                        </div>
+                        
+                        {% if grandeur_hydro %}
+                        <div class="border-b border-gray-200 pb-4">
+                            <dt class="text-sm font-medium text-gray-500 mb-1">Grandeur filtrée</dt>
+                            <dd class="text-sm text-gray-900">{{ grandeur_hydro }}</dd>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="border-b border-gray-200 pb-4">
+                            <dt class="text-sm font-medium text-gray-500 mb-1">Région</dt>
+                            <dd class="text-sm text-gray-900">{{ station.libelle_region }}</dd>
+                        </div>
+                        
+                        <div class="border-b border-gray-200 pb-4">
+                            <dt class="text-sm font-medium text-gray-500 mb-1">Département</dt>
+                            <dd class="text-sm text-gray-900">{{ station.libelle_departement }}</dd>
+                        </div>
+                        
+                        <div class="border-b border-gray-200 pb-4">
+                            <dt class="text-sm font-medium text-gray-500 mb-1">Commune</dt>
+                            <dd class="text-sm text-gray-900">{{ station.libelle_commune }}</dd>
+                        </div>
+                        
+                        <div class="border-b border-gray-200 pb-4">
+                            <dt class="text-sm font-medium text-gray-500 mb-1">Cours d'eau</dt>
+                            <dd class="text-sm text-gray-900">
+                                {% if station.libelle_cours_eau %}
+                                    {{ station.libelle_cours_eau }}
+                                {% else %}
+                                    Non renseigné
+                                {% endif %}
+                            </dd>
+                        </div>
+                        
+                        <div class="border-b border-gray-200 pb-4">
+                            <dt class="text-sm font-medium text-gray-500 mb-1">Coordonnées</dt>
+                            <dd class="text-sm text-gray-900">
+                                {% if station.latitude_station and station.longitude_station %}
+                                    Lat: {{ "%.6f"|format(station.latitude_station) }}<br>
+                                    Lon: {{ "%.6f"|format(station.longitude_station) }}
+                                {% else %}
+                                    Non renseignées
+                                {% endif %}
+                            </dd>
+                        </div>
+                        
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500 mb-1">Statut</dt>
+                            <dd class="text-sm">
+                                {% if station.en_service == 1 %}
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                        En service
+                                    </span>
+                                {% else %}
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                                        Hors service
+                                    </span>
+                                {% endif %}
+                            </dd>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Graphiques et statistiques -->
+            <div class="lg:col-span-2">
+                <!-- Statistiques -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-chart-bar text-blue-600 text-xl"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-gray-500">Total mesures</p>
+                                <p class="text-lg font-semibold text-gray-900">{{ stats.total_mesures }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-arrow-down text-green-600 text-xl"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-gray-500">Minimum</p>
+                                <p class="text-lg font-semibold text-gray-900">{{ "%.2f"|format(stats.valeur_min) }} {{ stats.unite }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-arrow-up text-red-600 text-xl"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-gray-500">Maximum</p>
+                                <p class="text-lg font-semibold text-gray-900">{{ "%.2f"|format(stats.valeur_max) }} {{ stats.unite }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-equals text-blue-600 text-xl"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-gray-500">Moyenne</p>
+                                <p class="text-lg font-semibold text-gray-900">{{ "%.2f"|format(stats.valeur_moyenne) }} {{ stats.unite }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Graphique -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        {% if stats.grandeur == 'H' %}
+                            Évolution de la hauteur d'eau
+                        {% elif stats.grandeur == 'Q' %}
+                            Évolution du débit
+                        {% else %}
+                            Évolution des mesures
+                        {% endif %}
+                        {% if grandeur_hydro %}
+                            - {{ grandeur_hydro }}
+                        {% endif %}
+                    </h3>
+                    
+                    {% if chart_data.values %}
+                        <div class="h-96">
+                            <canvas id="measurementChart"></canvas>
+                        </div>
+                    {% else %}
+                        <div class="flex items-center justify-center h-96 bg-gray-50 rounded-lg">
+                            <div class="text-center">
+                                <i class="fas fa-chart-line text-gray-400 text-6xl mb-4"></i>
+                                <p class="text-lg font-medium text-gray-500">Aucune donnée disponible</p>
+                                <p class="text-sm text-gray-400">pour la période et les filtres sélectionnés</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if chart_data.values %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('measurementChart');
+    if (!ctx) return;
+    
+    const chartData = {{ chart_data_json|safe }};
+    
+    if (!chartData.labels || !chartData.values || chartData.values.length === 0) {
+        return;
+    }
+    
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: chartData.labels,
+            datasets: [{
+                label: '{% if stats.grandeur == "H" %}Hauteur d\'eau ({{ stats.unite }}){% elif stats.grandeur == "Q" %}Débit ({{ stats.unite }}){% else %}Valeur ({{ stats.unite }}){% endif %}',
+                data: chartData.values,
+                borderColor: 'rgb(59, 130, 246)',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    title: {
+                        display: true,
+                        text: '{% if stats.grandeur == "H" %}Hauteur ({{ stats.unite }}){% elif stats.grandeur == "Q" %}Débit ({{ stats.unite }}){% else %}Valeur ({{ stats.unite }}){% endif %}'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            }
+        }
+    });
+});
+</script>
+{% endif %}
+{% endblock %}
